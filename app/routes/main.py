@@ -10,6 +10,25 @@ from flask import Blueprint, jsonify
 
 main_bp = Blueprint("main", __name__)
 
+# i'm thinking of callling this api every 30 minutes (from cron.org) to update the database with latest news 
+@main_bp.route("/", methods=["GET"])
+def update_db_with_news():
+    news = get_latest_news()
+
+    for article in news:
+        is_inserted = insert_article_if_not_exists(article)
+        if is_inserted is False:
+            continue
+        gemini_response = get_gemini_response(article)
+        if gemini_response is None:
+            continue
+        data = json.loads(gemini_response)
+        formatted_post_content = format_article_to_post(data)
+        add_fields_in_db_post_document(article["news_id"], formatted_post_content)
+        time.sleep(5)
+
+    return jsonify({"success": True, "message": "All articles updated successfully!"})
+
 @main_bp.route("/post-everything-new", methods=["POST"])
 def post_everything_new():
     news = get_latest_news()

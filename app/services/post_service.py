@@ -9,7 +9,7 @@ def insert_article_if_not_exists(article:News) -> bool:
         is_exist =  collection.find_one({"news_id": article["news_id"], "is_posted": False})
         if is_exist:
             print(f"Article with title '{article['title']}' already exists. Skipping insertion.")
-            return
+            return False
         
         collection.insert_one(article)
         print("Article inserted successfully.")
