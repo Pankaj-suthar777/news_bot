@@ -44,7 +44,6 @@ def post_everything_new():
 
         update_posted_status(article["news_id"], True)
         add_fields_in_db_post_document(article["news_id"], data)
-        time.sleep(5)
 
     return jsonify({"success": True, "message": "All articles posted successfully!"})
 
