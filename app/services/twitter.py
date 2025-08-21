@@ -3,7 +3,7 @@ import tweepy
 import requests
 import tempfile
 import os
-from ..utils.logger import logger
+# from ..utils.logger import# logger
 
 
 def post_tweet_with_image_url(tweet_text: str, image_url: str,reply_tweet_text = ""):
@@ -36,10 +36,10 @@ def post_tweet_with_image_url(tweet_text: str, image_url: str,reply_tweet_text =
     try:
         # Verify credentials
         user = client.get_me()
-        logger.info(f"Authenticated as: {user.data.username}")
+       # logger.info(f"Authenticated as: {user.data.username}")
 
         # Download the image from the URL
-        logger.info(f"Downloading image from: {image_url}")
+       # logger.info(f"Downloading image from: {image_url}")
         response = requests.get(image_url, stream=True)
         if response.status_code != 200:
             raise RuntimeError(f"Failed to download image from {image_url}: Status {response.status_code}")
@@ -58,10 +58,10 @@ def post_tweet_with_image_url(tweet_text: str, image_url: str,reply_tweet_text =
 
         try:
             # Upload image using v1.1 API
-            logger.info(f"Uploading image from temporary file: {temp_file_path}")
+           # logger.info(f"Uploading image from temporary file: {temp_file_path}")
             media = api.media_upload(filename=temp_file_path)
             media_id = media.media_id
-            logger.info(f"Image uploaded successfully, media_id: {media_id}")
+           # logger.info(f"Image uploaded successfully, media_id: {media_id}")
 
             # Post tweet with text and media using v2 API
             response = client.create_tweet(text=tweet_text, media_ids=[media_id])
@@ -73,21 +73,21 @@ def post_tweet_with_image_url(tweet_text: str, image_url: str,reply_tweet_text =
                 in_reply_to_tweet_id=initial_tweet_id,
             )
 
-            logger.info(f"Tweet posted successfully! Tweet ID: {response.data['id']}")
+           # logger.info(f"Tweet posted successfully! Tweet ID: {response.data['id']}")
             return response
 
         finally:
             # Clean up the temporary file
             os.unlink(temp_file_path)
-            logger.info(f"Temporary file deleted: {temp_file_path}")
+           # logger.info(f"Temporary file deleted: {temp_file_path}")
 
     except tweepy.TweepyException as e:
-        logger.error(f"Failed to post tweet: {e}")
-        logger.error(f"Full error response: {e.response.text if e.response else 'No response details'}")
-        if e.response:
-            logger.error(f"Response status: {e.response.status_code}")
-            logger.error(f"Response headers: {e.response.headers}")
+       # logger.error(f"Failed to post tweet: {e}")
+       # logger.error(f"Full error response: {e.response.text if e.response else 'No response details'}")
+        # if e.response:
+        #    logger.error(f"Response status: {e.response.status_code}")
+        #    logger.error(f"Response headers: {e.response.headers}")
         raise RuntimeError(f"Failed to post tweet: {e}")
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
+       # logger.error(f"Unexpected error: {e}")
         raise RuntimeError(f"Unexpected error: {e}")
